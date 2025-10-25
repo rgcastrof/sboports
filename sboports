@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=1.1.7
+VERSION=1.1.8
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -169,10 +169,12 @@ pkg_clean() {
 		read -p "Do you also want to remove the distfiles? [y/N] " answer
 		if [ "$answer" == "y" ] || [ "$answer" == "Y" ]; then
 			source "$PKG_NAME.info"
-			for distfile in $DOWNLOAD; do
-				if [ -f $(basename "$distfile") ]; then
-					rm "$(basename "$distfile")"
-				fi
+			for url in $DOWNLOAD; do
+				ext=$(echo "$(basename "$url")" | grep -oE '(\.[^.]+)$')
+				readarray -t distfiles < <(sniff . -t f -p "$ext")
+				for distfile in "${distfiles[@]}"; do
+					rm "$distfile"
+				done
 			done
 		fi
 	else
