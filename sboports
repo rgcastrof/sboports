@@ -20,13 +20,13 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=1.1.8
+VERSION=1.1.9
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
 REPO_URL="git://git.slackbuilds.org/slackbuilds.git"
 SRCS_DIR="/tmp/SBo"
-PKG_NAME=$(basename $(pwd))
+PKG_NAME=$(basename $PWD)
 
 error() {
 	echo "$1"
@@ -34,8 +34,7 @@ error() {
 }
 
 dir_check() {
-	path_dir=$(dirname $(dirname $(pwd)))
-	if [ "$path_dir" == "$REPO_DIR" ]; then
+	if [ "$PWD" == "$REPO_DIR" ]; then
 		return 0
 	fi
 		return 1
