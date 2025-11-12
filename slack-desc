@@ -1,0 +1,19 @@
+# HOW TO EDIT THIS FILE:
+# The "handy ruler" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+sboports: sboports (Ports-like manager for SlackBuilds.org Scripts)
+sboports:
+sboports: sboports is a small, command-line utility written in Shell Bash 
+sboports: to simplify the process of working with the SlackBuilds.org ("SBo")
+sboports: repository also keeping up to date with the original project.
+sboports: It functions as a lightweight, ports-like system, allowing users to
+sboports: clone, update, and manage the SBo script tree.
+sboports:
+sboports: Homepage: https://codeberg.org/rgcastrof/sboports
+sboports:
+sboports:
