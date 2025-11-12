@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=1.1.9
+VERSION=1.1.10
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -101,11 +101,23 @@ download_missing() {
 }
 
 extract_hashes() {
-	source "$PKG_NAME.info"
-	download_missing $DOWNLOAD
-	download_missing $DOWNLOAD_x86_64
-	md5sums=$(echo "$MD5SUM" "$MD5SUM_x86_64" | grep -oE '\b[a-fA-F0-9]{32}\b')
-	md5sum_arr=($md5sums)
+	if dir_check; then
+		if [ -f "$PKG_NAME.info" ]; then
+			source "$PKG_NAME.info"
+			if [ ! -z $DOWNLOAD ]; then
+				download_missing $DOWNLOAD
+				download_missing $DOWNLOAD_x86_64
+				md5sums=$(echo "$MD5SUM" "$MD5SUM_x86_64" | grep -oE '\b[a-fA-F0-9]{32}\b')
+				md5sum_arr=($md5sums)
+			else
+				error "Error: package url not found in the .info file."
+			fi
+		else
+			error "Error: you are not inside the package directory."
+		fi
+	else
+		error "Error: You are not inside the SlackBuilds tree."
+	fi
 }
 
 pkg_checksum() {
