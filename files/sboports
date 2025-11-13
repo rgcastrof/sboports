@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=1.1.11
+VERSION=1.1.12
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -34,10 +34,11 @@ error() {
 }
 
 dir_check() {
-	if [ "$PWD" == "$REPO_DIR" ]; then
-		return 0
-	fi
-		return 1
+	[[ "$PWD" == "$REPO_DIR"* ]]
+}
+
+is_inside_pkg_dir() {
+	[[ -f "$PKG_NAME.info" ]]
 }
 
 validate_url() {
@@ -70,13 +71,17 @@ try_urls() {
 
 pkg_fetch() {
 	if dir_check; then
-		source "$PKG_NAME.info"
-		if ! try_urls $DOWNLOAD; then
-				echo "No valid url found. Trying with DOWNLOAD_x86_64"
+		if is_inside_pkg_dir; then
+			source "$PKG_NAME.info"
+			if ! try_urls $DOWNLOAD; then
+					echo "No valid url found. Trying with DOWNLOAD_x86_64"
 
-			if ! try_urls $DOWNLOAD_x86_64; then
-				error "No valid url found"
+				if ! try_urls $DOWNLOAD_x86_64; then
+					error "No valid url found"
+				fi
 			fi
+		else
+			error "Error: you are not inside the package directory."
 		fi
 	else
 		error "Error: You are not inside the SlackBuilds tree."
@@ -102,7 +107,7 @@ download_missing() {
 
 extract_hashes() {
 	if dir_check; then
-		if [ -f "$PKG_NAME.info" ]; then
+		if is_inside_pkg_dir; then
 			source "$PKG_NAME.info"
 			if [ ! -z $DOWNLOAD ]; then
 				download_missing $DOWNLOAD
@@ -140,16 +145,23 @@ pkg_build() {
 
 pkg_install() {
 	if dir_check; then
-		source "$PKG_NAME.info"
-		pkg_file=$(sniff /tmp -t f -p "$PRGNAM-$VERSION")
-		if [ ! -z "$pkg_file" ]; then
-			echo "Package $PKG_NAME found at $pkg_file"
-			read -p "Do you want to install/reinstall it? [y/N] " answer
-			if [ "$answer" ==  "y" ] || [ "$answer" == "Y" ]; then
-				/sbin/upgradepkg --reinstall --install-new "$pkg_file"
-				echo "Package installed/reinstalled successfully."
-				exit 0
+		if is_inside_pkg_dir; then
+			source "$PKG_NAME.info"
+			pkg_file=$(sniff /tmp -t f -p "$PRGNAM-$VERSION")
+			if [ ! -z "$pkg_file" ]; then
+				echo "Package $PKG_NAME found at $pkg_file"
+				read -p "Do you want to install/reinstall it? [y/N] " answer
+				if [ "$answer" ==  "y" ] || [ "$answer" == "Y" ]; then
+					if /sbin/upgradepkg --reinstall --install-new "$pkg_file"; then
+						echo "Package installed/reinstalled successfully."
+						exit 0
+					else
+						error "Error: Failed to install/uninstall package."
+					fi
+				fi
 			fi
+		else
+			error "Error: you are not inside the package directory."
 		fi
 		pkg_build
 		pkg_file=$(sniff /tmp -t f -p "$PRGNAM-$VERSION")
