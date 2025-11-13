@@ -7,7 +7,7 @@ _sboports()
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
 	avaliable_commands="fetch checksum diff install
-		uninstall clean search help"
+		remove clean search help"
 
 	if [ "$COMP_CWORD" -eq 1 ]; then
 		COMPREPLY=($(compgen -W "$avaliable_commands" -- $cur))
@@ -17,6 +17,10 @@ _sboports()
 	case "$prev" in
 		fetch)
 			COMPREPLY=($(compgen -W "extract update" -- $cur))
+			;;
+		remove)
+			local sbos=($(find /var/log/packages/ -type f -name "*_SBo" -printf "%f\n"))
+			COMPREPLY=($(compgen -W "${sbos[*]}" -- $cur))
 			;;
 	esac
 }
