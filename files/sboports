@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=1.1.12
+VERSION=2.0.0
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -175,11 +175,12 @@ pkg_install() {
 	fi
 }
 
-pkg_uninstall() {
-	if dir_check; then
-		/sbin/removepkg "$PKG_NAME"
-	else
-		error "Error: You are not inside the SlackBuilds tree."
+pkg_remove() {
+	if [ -z "$1" ]; then
+		error "You must specify a package name."
+	fi
+	if ! /sbin/removepkg "$1"; then
+		echo "Error: Failed to remove the package."
 	fi
 }
 
@@ -308,7 +309,7 @@ $NAME - version $VERSION
 Usage:
        $NAME fetch {extract|update}
        $NAME checksum
-       $NAME {install|uninstall|clean}
+       $NAME {install|remove|clean}
        $NAME search [PACKAGE]
 
 For more info, run: $NAME help
@@ -333,7 +334,7 @@ Work with packages:
 	checksum                 Verify the integrity of distfiles using md5 checksum.
 	diff                     Show version differences between installed packages and SlackBuilds tree.
 	install                  Build and install the specified package.
-	uninstall                Remove the installed package.
+	remove                   Remove the installed package.
 	clean                    Remove extracted source and temporary build files from /tmp.
 
 Show information:
@@ -355,8 +356,8 @@ case "$1" in
 	install)
 		pkg_install
 		;;
-	uninstall)
-		pkg_uninstall
+	remove)
+		pkg_remove "$2"
 		;;
 	clean)
 		pkg_clean
