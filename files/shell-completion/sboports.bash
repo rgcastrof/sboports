@@ -7,7 +7,7 @@ _sboports()
 	cur=${COMP_WORDS[COMP_CWORD]}
 	prev=${COMP_WORDS[COMP_CWORD-1]}
 	avaliable_commands="fetch checksum diff install
-		remove clean search help"
+		remove clean search help changelog"
 
 	if [ "$COMP_CWORD" -eq 1 ]; then
 		COMPREPLY=($(compgen -W "$avaliable_commands" -- $cur))
