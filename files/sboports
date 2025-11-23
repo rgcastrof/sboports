@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=2.0.0
+VERSION=2.1.0
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -262,6 +262,12 @@ pkg_diff() {
 	echo "Done."
 }
 
+show_changelog() {
+	changelog=$(find /usr/ports/ -maxdepth 1 -type f -name "ChangeLog.txt")
+	[ -z "$changelog" ] && { echo "Error: no ChangeLog.txt file found."; return 1; }
+	more "$changelog"
+}
+
 repo_extract() {
 	if [ ! -d "$REPO_DIR/.git" ]; then
 		echo "Cloning repository. This may take a while..."
@@ -367,6 +373,9 @@ case "$1" in
 		;;
 	diff)
 		pkg_diff
+		;;
+	changelog)
+		show_changelog
 		;;
 	help)
 		show_help
