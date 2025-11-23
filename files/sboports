@@ -20,7 +20,7 @@
 # Rogério Girão rogeriogirao1@proton.me
 #
 NAME=$(basename "$0")
-VERSION=2.1.0
+VERSION=2.1.1
 LOCAL_DIR="/usr"
 REPO_NAME="ports"
 REPO_DIR="$LOCAL_DIR/$REPO_NAME"
@@ -314,9 +314,9 @@ $NAME - version $VERSION
 
 Usage:
        $NAME fetch {extract|update}
-       $NAME checksum
        $NAME {install|remove|clean}
        $NAME search [PACKAGE]
+       $NAME {changelog|diff}
 
 For more info, run: $NAME help
 EOF
@@ -338,13 +338,14 @@ Synchronize and check for updates:
 Work with packages:
 	fetch                    Download source files (distfiles) for the specified package.
 	checksum                 Verify the integrity of distfiles using md5 checksum.
-	diff                     Show version differences between installed packages and SlackBuilds tree.
 	install                  Build and install the specified package.
 	remove                   Remove the installed package.
 	clean                    Remove extracted source and temporary build files from /tmp.
 
 Show information:
 	search <package>         Search for a package by name and display its metadata.
+	diff                     Show version differences between installed packages and SlackBuilds tree.
+	changelog                Show SlackBuilds ChangeLog.txt and exit.
 	help                     Show this help message.
 EOF
 }
